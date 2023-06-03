@@ -13,8 +13,7 @@
     <div class="row mt-4">
       <div class="col-md-8">
         <a href="{% url 'task_edit' pk=object.pk %}" class="btn btn-primary">Update</a>
-        <a href="" class="btn btn-danger">Delete</a>
-        {% comment %} <a href="{% url 'task_delete' pk=object.pk %}" class="btn btn-danger">Delete</a> {% endcomment %}
+        <a href="{% url 'task_delete' pk=object.pk %}" class="btn btn-danger">Delete</a>
         <a href="{% url 'home' %}" class="btn btn-secondary">Back to List</a>
       </div>
     </div>
