@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.min.css" %}" />
+        <script src="{% static "bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+        <script>
+        {% block scripts %}
+        {% endblock scripts %}
+        </script>
+        <title>
+            {% block title %}
+            {% endblock title %}
+        </title>
+    </head>
+    <nav>
+        {% include "includes/header.html" %}
+    </nav>
+    <body>
+        {% include "includes/messages.html" %}
+        {% block content %}
+        {% endblock content %}
+    </body>
+    <footer>
+        {% include "includes/footer.html" %}
+    </footer>
+</html>
