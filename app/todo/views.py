@@ -16,7 +16,13 @@ class TaskDetailView(DetailView):
     template_name = "todo/task_detail.html"
 
 
+class TaskCreateView(CreateView):
+    model = Task
+    template_name = "todo/task_new.html"
+    fields = "__all__"
+
+
 class TaskUpdateView(UpdateView):
     model = Task
     template_name = "todo/task_edit.html"
-    fields = '__all__'
+    fields = "__all__"
