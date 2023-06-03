@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "widget_tweaks",
     # My apps:
     "todo",
+    "accounts",
 ]
 
 MIDDLEWARE = [
@@ -144,4 +145,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
+
 DATE_INPUT_FORMATS = ["%d-%m-%Y %H:%M", "%d-%m-%Y %H:%M", "%d-%m-%Y"]
+
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = 'home'
