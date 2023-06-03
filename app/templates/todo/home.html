@@ -6,7 +6,7 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col" width="50%%">Title</th>
+          <th scope="col" width="50%%">Target</th>
           <th scope="col">Ended at</th>
           <th scope="col">Status</th>
           <th scope="col"></th>
@@ -16,7 +16,7 @@
         {% for task in all_tasks_list %}
           <tr>
             <td>{{ task.title }}</td>
-            <td>{{ task.end_date }}</td>
+            <td>{% if task.end_date %}{{ task.end_date }}{% else %}N/A{% endif %}</td>
             <td>{{ task.get_status_display }}</td>
             <td><a href="{% url 'task_detail' pk=task.pk %}" class="btn btn-primary btn-sm">View</a></td>
           </tr>
@@ -27,7 +27,7 @@
         {% endfor %}
       </tbody>
     </table>
-    <a href="" class="btn btn-success">Create New Task</a>
     {% comment %} <a href="{% url 'task_create' %}" class="btn btn-success">Create New Task</a> {% endcomment %}
+    <a href="" class="btn btn-success">Create New Task</a>
   </div>
 {% endblock %}

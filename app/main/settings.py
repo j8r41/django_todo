@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third parties:
+    "crispy_forms",
+    "crispy_bootstrap5",
+    "widget_tweaks",
     # My apps:
     "todo",
 ]
@@ -72,7 +76,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 #  My context processors:
-                'context_processors.current_year.current_year'
+                "context_processors.current_year.current_year",
             ],
         },
     },
@@ -137,3 +141,7 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+DATE_INPUT_FORMATS = ["%d-%m-%Y"]
