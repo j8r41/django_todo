@@ -1,27 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
-    <table class="table">
-        <thead>
-            <th scope='Task'></th>
-            <th scope='Status'></th>
-            <th scope='End time'></th>
-            <th scope='Comlete'></th>
-            <th scope='Delete'></th>
-        </thead>
-        <tbody>
-            {% for task in all_tasks_list %}
-                <tr>
-                    <th>{{ task.title }}</th>
-                    <th>{{ task.status }}</th>
-                    <th>{{ task.end_date }}</th>
-                    <th>
-                        > DONE <
-                    </th>
-                    <th>
-                        > DELETE <
-                    </th>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <th scope='col' width="50%">Task</th>
+                <th scope=''>Status</th>
+                <th scope=''>End time</th>
+                <th scope=''>Comlete</th>
+                <th scope=''>Delete</th>
+            </thead>
+            <tbody>
+                {% for task in all_tasks_list %}
+                    <tr>
+                        <th>
+                            <a href="" class="text-reset">{{ task.title }}</a>
+                        </th>
+                        <th>{{ task.get_status_display }}</th>
+                        <th>{{ task.end_date }}</th>
+                        <th>
+                            > DONE <
+                        </th>
+                        <th>
+                            > DELETE <
+                        </th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock content %}
