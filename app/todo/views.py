@@ -14,3 +14,8 @@ class TaskListView(ListView):
 class TaskDetailView(DetailView):
     model = Task
     template_name = "todo/task_detail.html"
+
+
+class TaskUpdateView(UpdateView):
+    model = Task
+    template_name = "task_edit.html"

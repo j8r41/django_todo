@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-8">
+        <h1>{{ object.title }}</h1>
+        <p class="lead">{{ object.description }}</p>
+        <p>Created at: {{ object.created_at }}</p>
+        {% if object.end_date %}
+          <p>End date: {{ object.end_date }}</p>
+        {% endif %}
+        <p>Status: {{ object.get_status_display }}</p>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-8">
+        <a href="" class="btn btn-primary">Update</a>
+        {% comment %} <a href="{% url 'task_update' pk=object.pk %}" class="btn btn-primary">Update</a> {% endcomment %}
+        <a href="" class="btn btn-danger">Delete</a>
+        {% comment %} <a href="{% url 'task_delete' pk=object.pk %}" class="btn btn-danger">Delete</a> {% endcomment %}
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back to List</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

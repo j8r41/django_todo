@@ -1,31 +1,33 @@
 {% extends 'base.html' %}
+
 {% block content %}
-    <div class="container">
-        <table class="table">
-            <thead>
-                <th scope='col' width="50%">Task</th>
-                <th scope=''>Status</th>
-                <th scope=''>End time</th>
-                <th scope=''>Comlete</th>
-                <th scope=''>Delete</th>
-            </thead>
-            <tbody>
-                {% for task in all_tasks_list %}
-                    <tr>
-                        <th>
-                            <a href="" class="text-reset">{{ task.title }}</a>
-                        </th>
-                        <th>{{ task.get_status_display }}</th>
-                        <th>{{ task.end_date }}</th>
-                        <th>
-                            > DONE <
-                        </th>
-                        <th>
-                            > DELETE <
-                        </th>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-{% endblock content %}
+  <div class="container mt-4">
+    <h1>Task list</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col" width="50%%">Title</th>
+          <th scope="col">Ended at</th>
+          <th scope="col">Status</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in all_tasks_list %}
+          <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.end_date }}</td>
+            <td>{{ task.get_status_display }}</td>
+            <td><a href="{% url 'task_detail' pk=task.pk %}" class="btn btn-primary btn-sm">View</a></td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4">No tasks found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a href="" class="btn btn-success">Create New Task</a>
+    {% comment %} <a href="{% url 'task_create' %}" class="btn btn-success">Create New Task</a> {% endcomment %}
+  </div>
+{% endblock %}
