@@ -19,18 +19,14 @@
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Profile</a>
-                        {% comment %} <a class="nav-link" href="{% url 'profile' %}">Profile</a> {% endcomment %}
+                        <a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        <a class="nav-link text-primary" href="{% url 'login' %}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'signup' %}">Register</a>
+                        <a class="nav-link text-success" href="{% url 'signup' %}">Register</a>
                     </li>
                 {% endif %}
             </ul>
