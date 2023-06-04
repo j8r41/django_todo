@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     "widget_tweaks",
     # My apps:
     "todo",
-    "accounts",
 ]
 
 MIDDLEWARE = [
