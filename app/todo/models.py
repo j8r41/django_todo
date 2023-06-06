@@ -31,6 +31,7 @@ class Task(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True, blank=True
     )
+    is_deadline_notification_sent = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse("task_detail", kwargs={"pk": self.pk})
@@ -39,12 +40,17 @@ class Task(models.Model):
         return self.title
 
     def send_notification(self, request):
-        if (
+        is_deadline_notification_sent = self.is_deadline_notification_sent
+        is_deadline = (
             self.end_date
             and self.end_date - timezone.now() <= timezone.timedelta(days=1)
-        ):
+        )
+
+        if not is_deadline_notification_sent and is_deadline:
             messages.add_message(
                 request,
                 messages.WARNING,
-                f'Task "{self.title}" is approaching its deadline.',
+                f'Task "{self.title}" is approaching its deadline',
             )
+            self.is_deadline_notification_sent = True
+            self.save()
