@@ -1,10 +1,10 @@
-# Django Do App
+# Django Library App
 
-## About
+## О приложении
 
-To-do list and task management app. Supported many users.
+ Веб-интерфейс для сотрудников библиотеки. Возможности: регистрация книг, авторов, читателей, маркировка книг и отслеживание их статуса, просмотр задолженности. Настроен API для взаимодействия со сторонними приложениями.
 
-## Install
+## Установка
 
 ### Prerequisites:
 
@@ -12,14 +12,14 @@ To-do list and task management app. Supported many users.
 - pip
 
 
-1. Download the repository.
+1. Скачайте репозиторий.
 ```
-$ git clone https://github.com/j8r41/django_todo.git 
+$ git clone https://github.com/j8r41/django_library.git
 ```
 
-2. Activate enviroment.
+2. Активируйте виртуальное окружение.
 ```
-$ cd django_todo
+$ cd django_library
 $ python3 -m venv venv
 
 #Linux, Mac:
@@ -29,29 +29,23 @@ $ source venv/bin/activate
 $ source venv/Scripts/activate 
 ```
 
-3. Install requirements.
+3. Установите requirements.
 ```
 (venv) $ pip install -r requirements.txt
 ```
 
-4. Note environment variables as in .envexample or just copy:
+4. Укажите переменные среды.
 ```
 $ touch .env
 $ nano .env
 ```
 ```
-SECRET_KEY=Your-Secret-Key
-POSTGRES_ENGINE = django.db.backends.postgresql_psycopg2
-POSTGRES_DB=postgres
-POSTGRES_NAME=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
+SECRET_KEY=django-insecure-...
 ```
-5. Ruun code.
+5. Запустите код.
 ```
 $ python3 manage.py makemigrations
 $ python3 manage.py migrate
-$ python3 manage.py collectstatic
 $ python3 manage.py runserver
 ```
 
