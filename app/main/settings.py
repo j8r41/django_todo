@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "local-key")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -88,12 +88,26 @@ WSGI_APPLICATION = "main.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": os.environ.get(
+                "POSTGRES_ENGINE", "django.db.backends.sqlite3"
+            ),
+            "NAME": os.environ.get("POSTGRES_NAME", "db.sqlite3"),
+            "USER": os.environ.get("POSTGRES_USER"),
+            "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+            "HOST": "db",
+            "PORT": 5432,
+        }
+    }
 
 
 # Password validation
@@ -148,4 +162,4 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 DATE_INPUT_FORMATS = ["%d-%m-%Y %H:%M", "%d-%m-%Y %H:%M", "%d-%m-%Y"]
 
 LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = "home"

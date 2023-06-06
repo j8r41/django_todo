@@ -1,6 +1,8 @@
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 
 class Task(models.Model):
@@ -29,9 +31,26 @@ class Task(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, null=True, blank=True
     )
+    is_deadline_notification_sent = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse("task_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.title
+
+    def send_notification(self, request):
+        is_deadline_notification_sent = self.is_deadline_notification_sent
+        is_deadline = (
+            self.end_date
+            and self.end_date - timezone.now() <= timezone.timedelta(days=1)
+        )
+
+        if not is_deadline_notification_sent and is_deadline:
+            messages.add_message(
+                request,
+                messages.WARNING,
+                f'Task "{self.title}" is approaching its deadline',
+            )
+            self.is_deadline_notification_sent = True
+            self.save()
