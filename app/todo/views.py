@@ -18,6 +18,10 @@ class TaskListView(LoginRequiredMixin, ListView):
         context["all_tasks_list"] = context["all_tasks_list"].filter(
             user=self.request.user
         )
+
+        for task in context["all_tasks_list"]:
+            task.send_notification(self.request)
+            
         return context
 
 
