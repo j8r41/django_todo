@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 {% block content %}
-    <div class="container mt-4">
+    <div class="container mt-4" enctype='multipart/form-data'>
         <h1>Create Task</h1>
         <form method="post">
             {% csrf_token %}
@@ -21,6 +21,9 @@
                 {{ form.status.label_tag }}
                 {% render_field form.status class="form-control" %}
             </div>
+            {{ form.files.label_tag }}
+            {{ form.files.errors }}
+            {{ form.files.multiple }}
             <button type="submit" class="btn btn-primary mt-3">Create</button>
             <a href="{% url 'home' %}" class="btn btn-secondary mt-3">Cancel</a>
         </form>
