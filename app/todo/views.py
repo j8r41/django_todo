@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
+from .forms import TaskForm
 from .models import Task
 
 
@@ -32,8 +33,8 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 
 class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Task
+    form_class = TaskForm
     template_name = "todo/task_new.html"
-    fields = "__all__"
     success_url = reverse_lazy("home")
     success_message = "Task was created successfully."
 
@@ -44,8 +45,8 @@ class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Task
+    form_class = TaskForm
     template_name = "todo/task_edit.html"
-    fields = "__all__"
     success_url = reverse_lazy("home")
     success_message = "Task was updated successfully."
 
