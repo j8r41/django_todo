@@ -3,7 +3,7 @@ services:
   db:
     image: postgres
     volumes:
-      - .app/data/db:/var/lib/postgresql/data
+      - ./app/data/db:/var/lib/postgresql/data
     environment:
       - POSTGRES_ENGINE=django.db.backends.postgresql_psycopg2
       - POSTGRES_DB=${POSTGRES_DB}
