@@ -22,6 +22,7 @@ class TaskTests(TestCase):
             end_date="2023-06-05 11:30:00",
             status="n",
             user=self.user,
+            is_deadline_notification_sent=False,
         )
 
     def test_string_representation(self):
@@ -42,6 +43,7 @@ class TaskTests(TestCase):
         self.assertEqual(f"{self.task.end_date}", "2023-06-05 11:30:00")
         self.assertEqual(f"{self.task.status}", "n")
         self.assertEqual(f"{self.task.user}", "testuser")
+        self.assertFalse(self.task.is_deadline_notification_sent)
 
     def test_login_required_redirect(self):
         response = self.client.get(reverse("home"))
@@ -76,6 +78,7 @@ class TaskTests(TestCase):
                 "end_date": "2023-06-05 11:30:00",
                 "status": "n",
                 "user": self.user.id,
+                "is_deadline_notification_sent": "false",
             },
         )
         self.assertEqual(response.status_code, 302)
@@ -86,6 +89,7 @@ class TaskTests(TestCase):
             datetime(2023, 6, 5, 11, 30, tzinfo=pytz.UTC),
         )
         self.assertEqual(Task.objects.last().status, "n")
+        self.assertFalse(Task.objects.last().is_deadline_notification_sent)
 
     def test_task_update_view(self):
         self.client.login(username="testuser", password="secret_password")
