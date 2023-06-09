@@ -5,9 +5,9 @@
     Edit task
 {% endblock title %}
 {% block content %}
-    <div class="container">
+    <div class="container mt-4">
         <h1 class="mb-4">Edit task "{{ object.title }}"</h1>
-        <form method="post">
+        <form method="post" enctype='multipart/form-data'>
             {% csrf_token %}
             <div class="form-group">
                 {{ form.title.label_tag }}
@@ -24,6 +24,10 @@
             <div class="form-group">
                 {{ form.status.label_tag }}
                 {% render_field form.status class="form-control" %}
+            </div>
+            <div class="form-group">
+                {{ form.files.label_tag }}
+                {% render_field form.files class="form-control" %}
             </div>
             <button type="submit" class="btn btn-primary mt-3">Save</button>
             <a href="{% url 'task_detail' object.pk %}"

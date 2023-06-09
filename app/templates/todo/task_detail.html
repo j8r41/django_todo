@@ -11,6 +11,7 @@
         <p>Created at: {{ object.created_at }}</p>
         {% if object.end_date %}<p>End date: {{ object.end_date }}</p>{% endif %}
         <p>Status: {{ object.get_status_display }}</p>
+        {% if object.files %}<p>Files: <a href="{{ object.files.url }}">{{ object.files }}</a></p>{% endif %}
       </div>
     </div>
     <div class="row mt-4">
