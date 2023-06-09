@@ -51,7 +51,7 @@ class Task(models.Model):
             messages.add_message(
                 request,
                 messages.WARNING,
-                f'Task "{self.title}" is approaching its deadline',
+                f'Task "{self.title}" is approaching its deadline!',
             )
             self.is_deadline_notification_sent = True
             self.save()

@@ -21,9 +21,10 @@
                 {{ form.status.label_tag }}
                 {% render_field form.status class="form-control" %}
             </div>
-            {{ form.files.label_tag }}
-            {{ form.files.errors }}
-            {{ form.files.multiple }}
+            <div class="form-group">
+                {{ form.files.label_tag }}
+                {% render_field form.files class="form-control" %}
+            </div>
             <button type="submit" class="btn btn-primary mt-3">Create</button>
             <a href="{% url 'home' %}" class="btn btn-secondary mt-3">Cancel</a>
         </form>

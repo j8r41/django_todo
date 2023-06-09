@@ -5,7 +5,6 @@ from .models import Task
 class TaskAdmin(admin.ModelAdmin):
     list_display = (
         "title",
-        "description",
         "created_at",
         "end_date",
         "status",
