@@ -30,7 +30,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     template_name = "todo/task_detail.html"
 
 
-class TaskCreateView(SuccessMessageMixin, CreateView):
+class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Task
     template_name = "todo/task_new.html"
     fields = "__all__"
@@ -42,7 +42,7 @@ class TaskCreateView(SuccessMessageMixin, CreateView):
         return super(TaskCreateView, self).form_valid(form)
 
 
-class TaskUpdateView(SuccessMessageMixin, UpdateView):
+class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Task
     template_name = "todo/task_edit.html"
     fields = "__all__"
@@ -54,7 +54,7 @@ class TaskUpdateView(SuccessMessageMixin, UpdateView):
         return super(TaskUpdateView, self).form_valid(form)
 
 
-class TaskDeleteView(SuccessMessageMixin, DeleteView):
+class TaskDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Task
     template_name = "todo/task_delete.html"
     success_url = reverse_lazy("home")
