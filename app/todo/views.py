@@ -38,21 +38,8 @@ class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy("home")
     success_message = "Task was created successfully."
 
-    def post(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
     def form_valid(self, form):
         form.instance.user = self.request.user
-        files = form.cleaned_data["file_field"]
-        for f in files:
-            instance = form.save(commit=False)
-            instance.files = f
-            instance.save()
         return super(TaskCreateView, self).form_valid(form)
 
 

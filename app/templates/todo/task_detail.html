@@ -12,12 +12,9 @@
         {% if object.end_date %}<p>End date: {{ object.end_date }}</p>{% endif %}
         <p>Status: {{ object.get_status_display }}</p>
         {% if object.files %}
-          <p>Files: {{ object.files }}</p>
-          {% comment %} <p>
-            {% for file in  object.files  %}
-              <a href="{{ file.url }}">{{ file }}</a>
-            </p>
-          {% endfor %} {% endcomment %}
+          <p>
+            Files: <a href="{{ object.files.url }}">{{ object.files }}</a>
+          </p>
         {% endif %}
       </div>
     </div>
