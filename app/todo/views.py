@@ -3,12 +3,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.http import Http404
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from .forms import TaskAssignedUsersForm, TaskForm
-from .models import Task
+from .forms import TaskAssignedUsersForm, TaskForm, CommentForm
+from .models import Task, Comment
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -43,6 +44,32 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        task = self.get_object()
+        comments = task.comments.all()
+        comment_form = CommentForm()
+        context["comments"] = comments
+        context["comment_form"] = comment_form
+        return context
+
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            Comment.objects.create(
+                user=request.user, task=task, text=form.cleaned_data["text"]
+            )
+            return redirect("task_detail", pk=task.pk)
+        else:
+            comments = task.comments.all()
+            context = {
+                "task": task,
+                "comments": comments,
+                "comment_form": form,
+            }
+            return render(request, self.template_name, context)
 
 
 class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
@@ -93,6 +120,15 @@ class TaskAssignedUsersView(
     template_name = "todo/task_add_users.html"
     success_url = reverse_lazy("home")
     success_message = "Users were added successfully."
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if self.object.user != request.user:
+            raise Http404("You are not allowed to add users to this task.")
+
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
     def form_valid(self, form):
         form.instance.user = self.request.user
