@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from multiupload.fields import MultiFileField
 
 
 class Task(models.Model):
@@ -56,4 +55,3 @@ class Task(models.Model):
             )
             self.is_deadline_notification_sent = True
             self.save()
-    
