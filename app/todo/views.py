@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
+from django.http import Http404
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -30,6 +31,18 @@ class TaskListView(LoginRequiredMixin, ListView):
 class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = "todo/task_detail.html"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if (
+            self.object.user != request.user
+            and request.user not in self.object.assigned_users.all()
+        ):
+            raise Http404("You are not allowed to view this task.")
+
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
 
 class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):

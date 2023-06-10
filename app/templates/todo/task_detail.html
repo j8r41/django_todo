@@ -17,6 +17,10 @@
           </p>
         {% endif %}
         {% if object.assigned_users.all %}
+        <p>
+          <b>Creator:</b>: {{object.user}}
+          
+        </p>
           <p>
             <b>Added users</b>:
             {% for user in task.assigned_users.all %}{{ user.username }}, {% endfor %}
