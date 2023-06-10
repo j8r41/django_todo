@@ -42,6 +42,11 @@ class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         form.instance.user = self.request.user
         return super(TaskCreateView, self).form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
 
 class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Task

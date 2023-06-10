@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.models import User
+
 from .models import Task
 
 
@@ -10,8 +12,17 @@ class TaskForm(forms.ModelForm):
             "description",
             "end_date",
             "status",
+            "assigned_users",
             "files",
         ]
         widgets = {
             "end_date": forms.DateTimeInput(attrs={"type": "datetime-local"}),
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields["assigned_users"].queryset = User.objects.exclude(
+                pk=user.pk
+            )

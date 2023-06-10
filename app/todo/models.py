@@ -33,6 +33,9 @@ class Task(models.Model):
     )
     is_deadline_notification_sent = models.BooleanField(default=False)
     files = models.FileField(upload_to="task_files/", null=True, blank=True)
+    assigned_users = models.ManyToManyField(
+        User, related_name="assigned_tasks", blank=True
+    )
 
     def get_absolute_url(self):
         return reverse("task_detail", kwargs={"pk": self.pk})
