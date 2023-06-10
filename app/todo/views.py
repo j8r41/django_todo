@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from .forms import TaskForm
+from .forms import TaskAssignedUsersForm, TaskForm
 from .models import Task
 
 
@@ -74,3 +74,22 @@ class TaskDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(self.request, self.success_message)
         return response
+
+
+class TaskAssignedUsersView(
+    LoginRequiredMixin, SuccessMessageMixin, UpdateView
+):
+    model = Task
+    form_class = TaskAssignedUsersForm
+    template_name = "todo/task_add_users.html"
+    success_url = reverse_lazy("home")
+    success_message = "Users were added successfully."
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(TaskAssignedUsersView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs

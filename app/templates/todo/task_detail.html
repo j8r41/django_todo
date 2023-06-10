@@ -16,10 +16,20 @@
             Files: <a href="{{ object.files.url }}">{{ object.files }}</a>
           </p>
         {% endif %}
+        {% if object.assigned_users %}
+          <p>
+            Added users:
+            {% for user in task.assigned_users.all %}{{ user.username }}, {% endfor %}
+          </p>
+        {% endif %}
       </div>
     </div>
     <div class="row mt-4">
       <div class="col-md-8">
+        <a href="{% url 'task_add_users' pk=object.pk %}"
+           class="btn btn-primary">Add Users</a>
+      </div>
+      <div class="col-md-8 mt-2">
         <a href="{% url 'task_edit' pk=object.pk %}" class="btn btn-primary">Update</a>
         <a href="{% url 'task_delete' pk=object.pk %}" class="btn btn-danger">Delete</a>
         <a href="{% url 'home' %}" class="btn btn-secondary">Back to List</a>
