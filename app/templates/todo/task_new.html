@@ -1,26 +1,15 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
+{% block title %}
+    Create task
+{% endblock title %}
 {% block content %}
+    {% load crispy_forms_tags %}
     <div class="container mt-4">
         <h1>Create Task</h1>
-        <form method="post">
+        <form method="post" enctype='multipart/form-data'>
             {% csrf_token %}
-            <div class="form-group">
-                {{ form.title.label_tag }}
-                {% render_field form.title class="form-control" %}
-            </div>
-            <div class="form-group">
-                {{ form.description.label_tag }}
-                {% render_field form.description class="form-control" %}
-            </div>
-            <div class="form-group">
-                {{ form.end_date.label_tag }}
-                {% render_field form.end_date type="datetime-local" class="form-control" min=current_time %}
-            </div>
-            <div class="form-group">
-                {{ form.status.label_tag }}
-                {% render_field form.status class="form-control" %}
-            </div>
+            {{ form|crispy }}
             <button type="submit" class="btn btn-primary mt-3">Create</button>
             <a href="{% url 'home' %}" class="btn btn-secondary mt-3">Cancel</a>
         </form>

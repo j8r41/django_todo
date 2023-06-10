@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from multiupload.fields import MultiFileField
 
 
 class Task(models.Model):
@@ -32,6 +33,7 @@ class Task(models.Model):
         User, on_delete=models.CASCADE, null=True, blank=True
     )
     is_deadline_notification_sent = models.BooleanField(default=False)
+    files = models.FileField(upload_to="task_files/", null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse("task_detail", kwargs={"pk": self.pk})
@@ -50,7 +52,8 @@ class Task(models.Model):
             messages.add_message(
                 request,
                 messages.WARNING,
-                f'Task "{self.title}" is approaching its deadline',
+                f'Task "{self.title}" is approaching its deadline!',
             )
             self.is_deadline_notification_sent = True
             self.save()
+    

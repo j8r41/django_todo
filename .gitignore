@@ -298,3 +298,4 @@ data
 .vscode
 staticfiles
 migrations
+postgres
