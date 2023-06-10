@@ -11,8 +11,12 @@ from .models import Task
 
 class TaskTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            username="testuser",
+        self.user1 = User.objects.create_user(
+            username="testuser1",
+            password="secret_password",
+        )
+        self.user2 = User.objects.create_user(
+            username="testuser2",
             password="secret_password",
         )
 
@@ -21,7 +25,7 @@ class TaskTests(TestCase):
             description="A nice description",
             end_date="2023-06-05 11:30:00",
             status="n",
-            user=self.user,
+            user=self.user1,
             is_deadline_notification_sent=False,
         )
 
@@ -42,7 +46,7 @@ class TaskTests(TestCase):
         )
         self.assertEqual(f"{self.task.end_date}", "2023-06-05 11:30:00")
         self.assertEqual(f"{self.task.status}", "n")
-        self.assertEqual(f"{self.task.user}", "testuser")
+        self.assertEqual(f"{self.task.user}", "testuser1")
         self.assertFalse(self.task.is_deadline_notification_sent)
 
     def test_login_required_redirect(self):
@@ -52,7 +56,7 @@ class TaskTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_task_list_view(self):
-        self.client.login(username="testuser", password="secret_password")
+        self.client.login(username="testuser1", password="secret_password")
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
         response = self.client.get(reverse("home"))
@@ -60,7 +64,7 @@ class TaskTests(TestCase):
         self.assertTemplateUsed(response, "todo/home.html")
 
     def test_task_detail_view(self):
-        self.client.login(username="testuser", password="secret_password")
+        self.client.login(username="testuser1", password="secret_password")
         response = self.client.get("/task/1/")
         no_response = self.client.get("/task/100000/")
         self.assertEqual(response.status_code, 200)
@@ -69,7 +73,7 @@ class TaskTests(TestCase):
         self.assertTemplateUsed(response, "todo/task_detail.html")
 
     def test_task_create_view(self):
-        self.client.login(username="testuser", password="secret_password")
+        self.client.login(username="testuser1", password="secret_password")
         response = self.client.post(
             reverse("task_new"),
             {
@@ -77,8 +81,9 @@ class TaskTests(TestCase):
                 "description": "New text",
                 "end_date": "2023-06-05 11:30:00",
                 "status": "n",
-                "user": self.user.id,
+                "user": self.user1.id,
                 "is_deadline_notification_sent": "false",
+                "assigned_users": self.user2.id,
             },
         )
         self.assertEqual(response.status_code, 302)
@@ -92,7 +97,7 @@ class TaskTests(TestCase):
         self.assertFalse(Task.objects.last().is_deadline_notification_sent)
 
     def test_task_update_view(self):
-        self.client.login(username="testuser", password="secret_password")
+        self.client.login(username="testuser1", password="secret_password")
         response = self.client.post(
             reverse("task_edit", args="1"),
             {
@@ -105,6 +110,6 @@ class TaskTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_task_delete_view(self):
-        self.client.login(username="testuser", password="secret_password")
+        self.client.login(username="testuser1", password="secret_password")
         response = self.client.post(reverse("task_delete", args="1"))
         self.assertEqual(response.status_code, 302)

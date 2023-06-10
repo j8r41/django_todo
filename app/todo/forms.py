@@ -18,14 +18,6 @@ class TaskForm(forms.ModelForm):
             "end_date": forms.DateTimeInput(attrs={"type": "datetime-local"}),
         }
 
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
-        super().__init__(*args, **kwargs)
-        if user:
-            self.fields["assigned_users"].queryset = User.objects.exclude(
-                pk=user.pk
-            )
-
 
 class TaskAssignedUsersForm(forms.ModelForm):
     class Meta:

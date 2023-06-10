@@ -8,17 +8,17 @@
       <div class="col-md-8">
         <h1>{{ object.title }}</h1>
         <p class="lead">{{ object.description }}</p>
-        <p>Created at: {{ object.created_at }}</p>
-        {% if object.end_date %}<p>End date: {{ object.end_date }}</p>{% endif %}
-        <p>Status: {{ object.get_status_display }}</p>
+        <p><b>Created at</b>: {{ object.created_at }}</p>
+        {% if object.end_date %}<p><b>End date</b>: {{ object.end_date }}</p>{% endif %}
+        <p><b>Status</b>: {{ object.get_status_display }}</p>
         {% if object.files %}
           <p>
-            Files: <a href="{{ object.files.url }}">{{ object.files }}</a>
+            <b>Files</b>: <a href="{{ object.files.url }}">{{ object.files }}</a>
           </p>
         {% endif %}
-        {% if object.assigned_users %}
+        {% if object.assigned_users.all %}
           <p>
-            Added users:
+            <b>Added users</b>:
             {% for user in task.assigned_users.all %}{{ user.username }}, {% endfor %}
           </p>
         {% endif %}
