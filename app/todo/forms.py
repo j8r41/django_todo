@@ -1,28 +1,10 @@
 from django import forms
-from .models import Task
+from django.contrib.auth.models import User
 
-
-class MultipleFileInput(forms.ClearableFileInput):
-    allow_multiple_selected = True
-
-
-class MultipleFileField(forms.FileField):
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault("widget", MultipleFileInput())
-        super().__init__(*args, **kwargs)
-
-    def clean(self, data, initial=None):
-        single_file_clean = super().clean
-        if isinstance(data, (list, tuple)):
-            result = [single_file_clean(d, initial) for d in data]
-        else:
-            result = single_file_clean(data, initial)
-        return result
+from .models import Task, Comment
 
 
 class TaskForm(forms.ModelForm):
-    files = MultipleFileField()
-
     class Meta:
         model = Task
         fields = [
@@ -36,6 +18,24 @@ class TaskForm(forms.ModelForm):
             "end_date": forms.DateTimeInput(attrs={"type": "datetime-local"}),
         }
 
+
+class TaskAssignedUsersForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ["assigned_users"]
+
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
-        self.fields["files"].widget.attrs["multiple"] = True
+        if user:
+            self.fields["assigned_users"].queryset = User.objects.exclude(
+                pk=user.pk
+            )
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = [
+            "text",
+        ]

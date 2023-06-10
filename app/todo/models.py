@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
-from multiupload.fields import MultiFileField
 
 
 class Task(models.Model):
@@ -34,6 +33,9 @@ class Task(models.Model):
     )
     is_deadline_notification_sent = models.BooleanField(default=False)
     files = models.FileField(upload_to="task_files/", null=True, blank=True)
+    assigned_users = models.ManyToManyField(
+        User, related_name="assigned_tasks", blank=True
+    )
 
     def get_absolute_url(self):
         return reverse("task_detail", kwargs={"pk": self.pk})
@@ -56,4 +58,15 @@ class Task(models.Model):
             )
             self.is_deadline_notification_sent = True
             self.save()
-    
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    task = models.ForeignKey(
+        Task, on_delete=models.CASCADE, related_name="comments"
+    )
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text
