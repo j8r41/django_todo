@@ -62,6 +62,3 @@ $ docker compose build
 $ docker compose up
 ```
 
-## Разработчики:
-
-- [j8r41](https://github.com/j8r41)
