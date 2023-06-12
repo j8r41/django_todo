@@ -5,18 +5,31 @@
 {% block content %}
   <div class="container mt-4">
     <h1>Task list</h1>
+    {% include 'includes/searchbar.html' %}
     <table class="table">
       <thead>
         <tr>
-          <th scope="col" width="50%%">
+          <th scope="col" width="50%">
             {% if request.GET.sort == 'title_desc' %}
               <a href="?sort=title_asc" class="text-decoration-none">Target &#9660;</a>
             {% else %}
               <a href="?sort=title_desc" class="text-decoration-none">Target &#9650;</a>
             {% endif %}
           </th>
-          <th scope="col">Ended at</th>
-          <th scope="col">Status</th>
+          <th scope="col">
+            {% if request.GET.sort == 'ended_at_desc' %}
+              <a href="?sort=ended_at_asc" class="text-decoration-none">Ended at &#9660;</a>
+            {% else %}
+              <a href="?sort=ended_at_desc" class="text-decoration-none">Ended at &#9650;</a>
+            {% endif %}
+          </th>
+          <th scope="col">
+            {% if request.GET.sort == 'status_desc' %}
+              <a href="?sort=status_asc" class="text-decoration-none">Status &#9660;</a>
+            {% else %}
+              <a href="?sort=status_desc" class="text-decoration-none">Status &#9650;</a>
+            {% endif %}
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>

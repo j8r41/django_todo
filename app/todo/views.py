@@ -26,15 +26,38 @@ class TaskListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
+        # Sorting
         if self.request.GET.get("sort") == "title_desc":
             self.ordering = "-title"
         elif self.request.GET.get("sort") == "title_asc":
             self.ordering = "title"
+        elif self.request.GET.get("sort") == "ended_at_desc":
+            self.ordering = "-end_date"
+        elif self.request.GET.get("sort") == "ended_at_asc":
+            self.ordering = "end_date"
+        elif self.request.GET.get("sort") == "status_desc":
+            self.ordering = "-status"
+        elif self.request.GET.get("sort") == "status_asc":
+            self.ordering = "status"
         else:
             self.ordering = "created_at"
-        queryset = queryset.filter(
-            Q(user=self.request.user) | Q(assigned_users=self.request.user)
-        ).order_by(self.ordering)
+
+        # Searchbar
+        search_query = self.request.GET.get("q")
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query)
+                | Q(description__icontains=search_query),
+                Q(user=self.request.user)
+                | Q(assigned_users=self.request.user),
+            ).order_by(self.ordering)
+        else:
+            queryset = queryset.filter(
+                Q(user=self.request.user)
+                | Q(assigned_users=self.request.user),
+            ).order_by(self.ordering)
+
         return queryset
 
     def get_context_data(self, **kwargs):
