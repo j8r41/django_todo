@@ -20,7 +20,7 @@ class TaskForm(forms.ModelForm):
 
 
 class TaskCompletionForm(forms.Form):
-    is_completed = forms.BooleanField(required=False)
+    completed = forms.BooleanField(widget=forms.HiddenInput())
 
 
 class TaskAssignedUsersForm(forms.ModelForm):

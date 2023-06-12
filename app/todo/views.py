@@ -91,20 +91,16 @@ class MarkTaskAsCompletedView(LoginRequiredMixin, View):
 
     def post(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
-        form = TaskCompletionForm(request.POST)
-        if form.is_valid():
-            is_completed = form.cleaned_data["is_completed"]
-            if is_completed:
-                task.is_completed = True
-                task.completed_by.add(request.user)
-                task.save()
-            else:
-                task.is_completed = False
-                task.completed_by.remove(request.user)
-                task.save()
-            return redirect("task_detail", pk=task.pk)
+        if not task.is_completed:
+            task.is_completed = True
+            task.completed_by.add(request.user)
+            task.save()
         else:
-            return HttpResponseBadRequest()
+            task.is_completed = False
+            task.completed_by.remove(request.user)
+            task.save()
+        return redirect("task_detail", pk=task.pk)
+
 
 
 class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):

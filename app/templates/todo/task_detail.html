@@ -30,12 +30,13 @@
             <b>Creator:</b> {{ object.user }}
           </p>
           <p>
-            <b>Added users:</b>
-            {% for user in task.assigned_users.all %}
-              {{ user.username }}
-              {% if not forloop.last %},{% endif %}
-            {% endfor %}
+            <b>Assigned to</b>: {{ object.assigned_users.all|join:", " }}
           </p>
+          {% if object.completed_by.all|length > 0 %}
+            <p>
+              <b>Completed by</b>: {{ object.completed_by.all|join:", " }}
+            </p>
+          {% endif %}
         {% endif %}
       </div>
     </div>
@@ -54,23 +55,23 @@
         <a href="{% url 'home' %}" class="btn btn-secondary">Back to List</a>
       </div>
     </div>
-    {% if user == object.user or user in object.assigned_users.all %}
-      <div class="container mt-4">
-        <form method="post"
-              action="{% url 'mark_task_as_completed' pk=object.pk %}">
-          {% csrf_token %}
-          {% load crispy_forms_tags %}
-          {{ task_completion_form|crispy }}
-          <button type="submit" class="btn btn-primary mt-2">
-            Mark as
+    {% if object.assigned_users.all %}
+      {% if user == object.user or user in object.assigned_users.all %}
+        <div class="container mt-4">
+          <form method="post"
+                action="{% url 'mark_task_as_completed' pk=object.pk %}">
+            {% csrf_token %}
+            <input type="hidden"
+                   name="completed"
+                   value="{% if not object.is_completed %}True{% else %}False{% endif %}">
             {% if not object.is_completed %}
-              completed
+              <button type="submit" class="btn btn-primary mt-2">Mark as completed</button>
             {% else %}
-              uncompleted
-            </button>
-          {% endif %}
-        </form>
-      </div>
+              <button type="submit" class="btn btn-danger mt-2">Mark as uncompleted</button>
+            {% endif %}
+          </form>
+        </div>
+      {% endif %}
     {% endif %}
     {% if comments %}
       <h3 class="mt-4">Comments</h3>
