@@ -31,18 +31,26 @@
           </p>
           <p>
             <b>Added users:</b>
-            {% for user in task.assigned_users.all %}{{ user.username }}{% if not forloop.last %}, {% endif %}{% endfor %}
+            {% for user in task.assigned_users.all %}
+              {{ user.username }}
+              {% if not forloop.last %},{% endif %}
+            {% endfor %}
           </p>
         {% endif %}
       </div>
     </div>
     <div class="row mt-4">
-      <div class="col-md-8">
-        <a href="{% url 'task_add_users' pk=object.pk %}" class="btn btn-primary me-2">Add Users</a>
-      </div>
+      {% if user.username == object.user.username %}
+        <div class="col-md-8">
+          <a href="{% url 'task_add_users' pk=object.pk %}"
+             class="btn btn-primary me-2">Add Users</a>
+          <a href="{% url 'task_edit' pk=object.pk %}"
+             class="btn btn-primary me-2">Update</a>
+          <a href="{% url 'task_delete' pk=object.pk %}"
+             class="btn btn-danger me-2">Delete</a>
+        </div>
+      {% endif %}
       <div class="col-md-8 mt-2">
-        <a href="{% url 'task_edit' pk=object.pk %}" class="btn btn-primary me-2">Update</a>
-        <a href="{% url 'task_delete' pk=object.pk %}" class="btn btn-danger me-2">Delete</a>
         <a href="{% url 'home' %}" class="btn btn-secondary">Back to List</a>
       </div>
     </div>

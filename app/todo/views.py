@@ -45,15 +45,6 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        task = self.get_object()
-        comments = task.comments.all()
-        comment_form = CommentForm()
-        context["comments"] = comments
-        context["comment_form"] = comment_form
-        return context
-
     def post(self, request, *args, **kwargs):
         task = self.get_object()
         form = CommentForm(request.POST)
@@ -70,6 +61,15 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
                 "comment_form": form,
             }
             return render(request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        task = self.get_object()
+        comments = task.comments.all()
+        comment_form = CommentForm()
+        context["comments"] = comments
+        context["comment_form"] = comment_form
+        return context
 
 
 class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
@@ -90,6 +90,10 @@ class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     template_name = "todo/task_edit.html"
     success_url = reverse_lazy("home")
     success_message = "Task was updated successfully."
+    
+    def get_queryset(self):
+        user = self.request.user
+        return self.model.objects.filter(user=user)
 
     def form_valid(self, form):
         form.instance.user = self.request.user

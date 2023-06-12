@@ -148,7 +148,7 @@ class CommentTests(TestCase):
             user=self.user1,
             is_deadline_notification_sent=False,
         )
-        self.comment1 = Comment.objects.create_user(
+        self.comment1 = Comment.objects.create(
             user=self.user1,
             task=self.task1,
             text="A good text",
