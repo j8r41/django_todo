@@ -1,15 +1,22 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
-from django.http import Http404
-from django.shortcuts import redirect, render
+from django.http import Http404, HttpResponseBadRequest
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from .forms import TaskAssignedUsersForm, TaskForm, CommentForm
-from .models import Task, Comment
+from .forms import (
+    CommentForm,
+    TaskAssignedUsersForm,
+    TaskCompletionForm,
+    TaskForm,
+)
+from .models import Comment, Task
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -67,9 +74,37 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
         task = self.get_object()
         comments = task.comments.all()
         comment_form = CommentForm()
+        task_completion_form = TaskCompletionForm()
+        if (
+            task.user == self.request.user
+            or self.request.user in task.assigned_users.all()
+        ) and not task.is_completed:
+            context["task_completion_form"] = task_completion_form
         context["comments"] = comments
         context["comment_form"] = comment_form
         return context
+
+
+class MarkTaskAsCompletedView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        return HttpResponseBadRequest()
+
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        form = TaskCompletionForm(request.POST)
+        if form.is_valid():
+            is_completed = form.cleaned_data["is_completed"]
+            if is_completed:
+                task.is_completed = True
+                task.completed_by.add(request.user)
+                task.save()
+            else:
+                task.is_completed = False
+                task.completed_by.remove(request.user)
+                task.save()
+            return redirect("task_detail", pk=task.pk)
+        else:
+            return HttpResponseBadRequest()
 
 
 class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
@@ -90,7 +125,7 @@ class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     template_name = "todo/task_edit.html"
     success_url = reverse_lazy("home")
     success_message = "Task was updated successfully."
-    
+
     def get_queryset(self):
         user = self.request.user
         return self.model.objects.filter(user=user)

@@ -19,6 +19,10 @@ class TaskForm(forms.ModelForm):
         }
 
 
+class TaskCompletionForm(forms.Form):
+    is_completed = forms.BooleanField(required=False)
+
+
 class TaskAssignedUsersForm(forms.ModelForm):
     class Meta:
         model = Task

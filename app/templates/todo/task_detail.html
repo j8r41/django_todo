@@ -40,7 +40,7 @@
       </div>
     </div>
     <div class="row mt-4">
-      {% if user.username == object.user.username %}
+      {% if user == object.user %}
         <div class="col-md-8">
           <a href="{% url 'task_add_users' pk=object.pk %}"
              class="btn btn-primary me-2">Add Users</a>
@@ -54,6 +54,24 @@
         <a href="{% url 'home' %}" class="btn btn-secondary">Back to List</a>
       </div>
     </div>
+    {% if user == object.user or user in object.assigned_users.all %}
+      <div class="container mt-4">
+        <form method="post"
+              action="{% url 'mark_task_as_completed' pk=object.pk %}">
+          {% csrf_token %}
+          {% load crispy_forms_tags %}
+          {{ task_completion_form|crispy }}
+          <button type="submit" class="btn btn-primary mt-2">
+            Mark as
+            {% if not object.is_completed %}
+              completed
+            {% else %}
+              uncompleted
+            </button>
+          {% endif %}
+        </form>
+      </div>
+    {% endif %}
     {% if comments %}
       <h3 class="mt-4">Comments</h3>
       <ul class="list-unstyled">

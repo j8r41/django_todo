@@ -7,6 +7,7 @@ from .views import (
     TaskListView,
     TaskUpdateView,
     TaskAssignedUsersView,
+    MarkTaskAsCompletedView
 )
 
 urlpatterns = [
@@ -23,5 +24,10 @@ urlpatterns = [
         "task/<int:pk>/share/",
         TaskAssignedUsersView.as_view(),
         name="task_add_users",
+    ),
+    path(
+        "tasks/<int:pk>/complete/",
+        MarkTaskAsCompletedView.as_view(),
+        name="mark_task_as_completed",
     ),
 ]

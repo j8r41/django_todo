@@ -36,6 +36,10 @@ class Task(models.Model):
     assigned_users = models.ManyToManyField(
         User, related_name="assigned_tasks", blank=True
     )
+    completed_by = models.ManyToManyField(
+        User, related_name="completed_tasks", blank=True
+    )
+    is_completed = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse("task_detail", kwargs={"pk": self.pk})
