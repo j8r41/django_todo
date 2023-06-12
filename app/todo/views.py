@@ -24,15 +24,46 @@ class TaskListView(LoginRequiredMixin, ListView):
     context_object_name = "all_tasks_list"
     template_name = "todo/home.html"
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        # Sorting
+        if self.request.GET.get("sort") == "title_desc":
+            self.ordering = "-title"
+        elif self.request.GET.get("sort") == "title_asc":
+            self.ordering = "title"
+        elif self.request.GET.get("sort") == "ended_at_desc":
+            self.ordering = "-end_date"
+        elif self.request.GET.get("sort") == "ended_at_asc":
+            self.ordering = "end_date"
+        elif self.request.GET.get("sort") == "status_desc":
+            self.ordering = "-status"
+        elif self.request.GET.get("sort") == "status_asc":
+            self.ordering = "status"
+        else:
+            self.ordering = "created_at"
+
+        # Searchbar
+        search_query = self.request.GET.get("q")
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query)
+                | Q(description__icontains=search_query),
+                Q(user=self.request.user)
+                | Q(assigned_users=self.request.user),
+            ).order_by(self.ordering)
+        else:
+            queryset = queryset.filter(
+                Q(user=self.request.user)
+                | Q(assigned_users=self.request.user),
+            ).order_by(self.ordering)
+
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["all_tasks_list"] = context["all_tasks_list"].filter(
-            Q(user=self.request.user) | Q(assigned_users=self.request.user)
-        )
-
         for task in context["all_tasks_list"]:
             task.send_notification(self.request)
-
         return context
 
 
@@ -100,7 +131,6 @@ class MarkTaskAsCompletedView(LoginRequiredMixin, View):
             task.completed_by.remove(request.user)
             task.save()
         return redirect("task_detail", pk=task.pk)
-
 
 
 class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
