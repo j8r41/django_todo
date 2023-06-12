@@ -8,7 +8,13 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col" width="50%%">Target</th>
+          <th scope="col" width="50%%">
+            {% if request.GET.sort == 'title_desc' %}
+              <a href="?sort=title_asc" class="text-decoration-none">Target &#9660;</a>
+            {% else %}
+              <a href="?sort=title_desc" class="text-decoration-none">Target &#9650;</a>
+            {% endif %}
+          </th>
           <th scope="col">Ended at</th>
           <th scope="col">Status</th>
           <th scope="col"></th>

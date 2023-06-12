@@ -24,15 +24,23 @@ class TaskListView(LoginRequiredMixin, ListView):
     context_object_name = "all_tasks_list"
     template_name = "todo/home.html"
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.GET.get("sort") == "title_desc":
+            self.ordering = "-title"
+        elif self.request.GET.get("sort") == "title_asc":
+            self.ordering = "title"
+        else:
+            self.ordering = "created_at"
+        queryset = queryset.filter(
+            Q(user=self.request.user) | Q(assigned_users=self.request.user)
+        ).order_by(self.ordering)
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["all_tasks_list"] = context["all_tasks_list"].filter(
-            Q(user=self.request.user) | Q(assigned_users=self.request.user)
-        )
-
         for task in context["all_tasks_list"]:
             task.send_notification(self.request)
-
         return context
 
 
@@ -100,7 +108,6 @@ class MarkTaskAsCompletedView(LoginRequiredMixin, View):
             task.completed_by.remove(request.user)
             task.save()
         return redirect("task_detail", pk=task.pk)
-
 
 
 class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
