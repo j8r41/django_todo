@@ -3,4 +3,6 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
-    pass
+    telegram = models.CharField(
+        max_length=50, blank=True, null=True, unique=True
+    )
