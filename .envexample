@@ -1,5 +1,0 @@
-SECRET_KEY=Your-Secret-Key
-POSTGRES_DB=postgres
-POSTGRES_NAME=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
