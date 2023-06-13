@@ -28,3 +28,4 @@ typing_extensions==4.6.3
 psycopg2-binary==2.9.6
 django-multiupload==0.6.1
 django-allauth==0.54.0
+django-debug-toolbar==4.1.0
