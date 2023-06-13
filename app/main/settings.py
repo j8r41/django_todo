@@ -42,11 +42,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     # Third parties:
     "crispy_forms",
     "crispy_bootstrap5",
     "widget_tweaks",
     "multiupload",
+    "allauth",
+    "allauth.account",
     # My apps:
     "todo.apps.TodoConfig",
     "accounts.apps.AccountsConfig",
@@ -158,7 +161,19 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 DATE_INPUT_FORMATS = ["%d-%m-%Y %H:%M", "%d-%m-%Y %H:%M", "%d-%m-%Y"]
 
-LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "home"
 
 AUTH_USER_MODEL = "accounts.CustomUser"
+
+# django-allauth config
+
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "home"
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+ACCOUNT_SESSION_REMEMBER = True
+
