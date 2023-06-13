@@ -46,9 +46,10 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "widget_tweaks",
-    'multiupload',
+    "multiupload",
     # My apps:
-    "todo",
+    "todo.apps.TodoConfig",
+    "accounts.apps.AccountsConfig",
 ]
 
 MIDDLEWARE = [
@@ -159,3 +160,5 @@ DATE_INPUT_FORMATS = ["%d-%m-%Y %H:%M", "%d-%m-%Y %H:%M", "%d-%m-%Y"]
 
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
+
+AUTH_USER_MODEL = "accounts.CustomUser"
