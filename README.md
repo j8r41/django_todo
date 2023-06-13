@@ -2,7 +2,7 @@
 
 ## About
 
-To-do list and task management app. Supported many users.
+To-do list and task management app. Supported many users, task compliting and discussing by multiple users, task sorting and searching, e-mail-verification. [Details here]([https://link-url-here.org](https://github.com/j8r41/django_todo/blob/master/task.txt])
 
 ## Install
 
