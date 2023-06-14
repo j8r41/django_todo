@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta
 
-from django.contrib.auth.models import User
+import pytz
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
-import pytz
 
-from .models import Task, Comment
+from .models import Comment, Task
+
+User = get_user_model()
 
 
 class TaskTests(TestCase):
@@ -162,5 +164,5 @@ class CommentTests(TestCase):
         self.assertEqual(f"{self.comment1.user}", "testuser1")
         self.assertEqual(f"{self.comment1.task}", "A good title")
         self.assertEqual(f"{self.comment1.text}", "A good text")
-        
-    # TODO: Test CRUD CommentModel 
+
+    # TODO: Test CRUD CommentModel
