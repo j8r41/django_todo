@@ -25,16 +25,16 @@ class TaskCompletionForm(forms.Form):
     completed = forms.BooleanField(widget=forms.HiddenInput())
 
 
-class TaskAssignedUsersForm(forms.ModelForm):
+class TaskPendingUsersForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ["assigned_users"]
+        fields = ["pending_users"]
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
         if user:
-            self.fields["assigned_users"].queryset = User.objects.exclude(
+            self.fields["pending_users"].queryset = User.objects.exclude(
                 pk=user.pk
             )
 
