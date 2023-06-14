@@ -47,15 +47,13 @@ class TaskListView(LoginRequiredMixin, ListView):
         if search_query:
             queryset = queryset.filter(
                 Q(title__icontains=search_query)
-                | Q(description__icontains=search_query),
-                Q(user=self.request.user)
-                | Q(assigned_users=self.request.user),
-            ).order_by(self.ordering)
-        else:
-            queryset = queryset.filter(
-                Q(user=self.request.user)
-                | Q(assigned_users=self.request.user),
-            ).order_by(self.ordering)
+                | Q(description__icontains=search_query)
+            )
+        queryset = (
+            queryset.filter(user=self.request.user)
+            .union(queryset.filter(assigned_users=self.request.user))
+            .order_by(self.ordering)
+        )
 
         return queryset
 
