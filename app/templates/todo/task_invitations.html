@@ -1,35 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="container mt-4">
-        <h1>Task Invitations</h1>
-        {% if object_list %}
-            <ul>
-                {% for task in object_list %}
-                    <li>
-                        <a href="{% url 'task_detail' task.pk %}">{{ task.title }}</a>
-                        {% if task.end_date %}(due {{ task.end_date|date:"SHORT_DATE_FORMAT" }}){% endif %}
-                        <form method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="task_id" value="{{ task.pk }}">
-                            <button type="submit" name="action" value="accept">Accept</button>
-                            <button type="submit" name="action" value="reject">Reject</button>
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>You have no pending task invitations.</p>
-        {% endif %}
-        {% if accepted_tasks %}
-            <h2>Accepted Tasks</h2>
-            <ul>
-                {% for task in accepted_tasks %}
-                    <li>
-                        <a href="{% url 'task_detail' task.pk %}">{{ task.title }}</a>
-                        {% if task.end_date %}(due {{ task.end_date|date:"SHORT_DATE_FORMAT" }}){% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
+<div class="container mt-4">
+    <h1>Task Invitations</h1>
+    {% if object_list %}
+        <ul class="list-group">
+            {% for task in object_list %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'task_detail' task.pk %}">{{ task.title }}</a>
+                    {% if task.end_date %}
+                        <span class="badge bg-info rounded-pill">Due {{ task.end_date|date:"SHORT_DATE_FORMAT" }}</span>
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="task_id" value="{{ task.pk }}">
+                        <button type="submit" name="action" value="accept" class="btn btn-success">Accept</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger">Reject</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no pending task invitations.</p>
+    {% endif %}
+    {% if accepted_tasks %}
+        <h2>Accepted Tasks</h2>
+        <ul class="list-group">
+            {% for task in accepted_tasks %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'task_detail' task.pk %}">{{ task.title }}</a>
+                    {% if task.end_date %}
+                        <span class="badge bg-info rounded-pill">Due {{ task.end_date|date:"SHORT_DATE_FORMAT" }}</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
 {% endblock %}

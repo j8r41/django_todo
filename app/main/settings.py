@@ -84,6 +84,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 #  My context processors:
                 "context_processors.current_year.current_year",
+                "context_processors.task_invitations_count.task_invitations_count",
             ],
         },
     },
