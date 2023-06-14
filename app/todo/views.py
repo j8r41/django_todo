@@ -11,7 +11,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from .forms import (
     CommentForm,
-    TaskAssignedUsersForm,
+    TaskPendingUsersForm,
     TaskCompletionForm,
     TaskForm,
 )
@@ -74,6 +74,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
         if (
             self.object.user != request.user
             and request.user not in self.object.assigned_users.all()
+            and request.user not in self.object.pending_users.all()
         ):
             raise Http404("You are not allowed to view this task.")
 
@@ -174,14 +175,14 @@ class TaskDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return response
 
 
-class TaskAssignedUsersView(
+class TaskPendingUsersView(
     LoginRequiredMixin, SuccessMessageMixin, UpdateView
 ):
     model = Task
-    form_class = TaskAssignedUsersForm
+    form_class = TaskPendingUsersForm
     template_name = "todo/task_add_users.html"
     success_url = reverse_lazy("home")
-    success_message = "Users were added successfully."
+    success_message = "Users were invited successfully."
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -193,10 +194,39 @@ class TaskAssignedUsersView(
         return self.render_to_response(context)
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super(TaskAssignedUsersView, self).form_valid(form)
+        self.object = self.get_object()
+        users_to_add = form.cleaned_data.get("pending_users")
+        for user in users_to_add:
+            if user not in self.object.assigned_users.all():
+                self.object.add_user(user)
+        return super(TaskPendingUsersView, self).form_valid(form)
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
+    def get_context_data(self, **kwargs):
+        self.object = self.get_object()
+        if self.object.user != self.request.user:
+            raise Http404("You are not allowed to add users to this task.")
+        context = super().get_context_data(**kwargs)
+        context["pending_users"] = self.object.pending_users.all()
+        return context
+
+
+class TaskInvitationsListView(LoginRequiredMixin, ListView):
+    model = Task
+    template_name = "todo/task_invitations.html"
+
+    def get_queryset(self):
+        return Task.objects.filter(pending_users=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["accepted_tasks"] = self.request.user.assigned_tasks.all()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        task = get_object_or_404(Task, pk=request.POST.get("task_id"))
+        action = request.POST.get("action")
+        if action == "accept":
+            task.accept_user(request, request.user)
+        elif action == "reject":
+            task.reject_user(request, request.user)
+        return redirect("task_invitations")

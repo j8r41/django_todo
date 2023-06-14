@@ -1,13 +1,14 @@
 from django.urls import path
 
 from .views import (
+    MarkTaskAsCompletedView,
+    TaskPendingUsersView,
     TaskCreateView,
     TaskDeleteView,
     TaskDetailView,
+    TaskInvitationsListView,
     TaskListView,
     TaskUpdateView,
-    TaskAssignedUsersView,
-    MarkTaskAsCompletedView
 )
 
 urlpatterns = [
@@ -22,12 +23,17 @@ urlpatterns = [
     ),
     path(
         "task/<int:pk>/share/",
-        TaskAssignedUsersView.as_view(),
+        TaskPendingUsersView.as_view(),
         name="task_add_users",
     ),
     path(
-        "tasks/<int:pk>/complete/",
+        "task/<int:pk>/complete/",
         MarkTaskAsCompletedView.as_view(),
         name="mark_task_as_completed",
+    ),
+    path(
+        "task/invitations/",
+        TaskInvitationsListView.as_view(),
+        name="task_invitations",
     ),
 ]

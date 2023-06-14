@@ -35,13 +35,16 @@ class Task(models.Model):
     )
     is_deadline_notification_sent = models.BooleanField(default=False)
     files = models.FileField(upload_to="task_files/", null=True, blank=True)
-    assigned_users = models.ManyToManyField(
-        User, related_name="assigned_tasks", blank=True
-    )
     completed_by = models.ManyToManyField(
         User, related_name="completed_tasks", blank=True
     )
     is_completed = models.BooleanField(default=False)
+    pending_users = models.ManyToManyField(
+        User, related_name="pending_tasks", blank=True
+    )
+    assigned_users = models.ManyToManyField(
+        User, related_name="assigned_tasks", blank=True
+    )
 
     def get_absolute_url(self):
         return reverse("task_detail", kwargs={"pk": self.pk})
@@ -64,6 +67,29 @@ class Task(models.Model):
             )
             self.is_deadline_notification_sent = True
             self.save()
+
+    def add_user(self, user):
+        self.pending_users.add(user)
+        self.save()
+
+    def accept_user(self, request, user):
+        self.pending_users.remove(user)
+        self.assigned_users.add(user)
+        self.save()
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            f'You have been added to the task "{self.title}"!',
+        )
+
+    def reject_user(self, request, user):
+        self.pending_users.remove(user)
+        self.save()
+        messages.add_message(
+            request,
+            messages.INFO,
+            f'You have been removed from the task "{self.title}"!',
+        )
 
 
 class Comment(models.Model):
