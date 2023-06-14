@@ -53,11 +53,19 @@
       {% endif %}
       <div class="col-md-8 mt-2">
         <a href="{% url 'home' %}" class="btn btn-secondary">Back to List</a>
+        {% if user in object.assigned_users.all %}
+          <form method="post"
+                class="mt-4"
+                action="{% url 'task_leave' pk=object.pk %}">
+            {% csrf_token %}
+            <button class="btn btn-secondary">Leave Task</button>
+          </form>
+        {% endif %}
       </div>
     </div>
     {% if object.assigned_users.all %}
       {% if user == object.user or user in object.assigned_users.all %}
-        <div class="container mt-4">
+        <div class="mt-4">
           <form method="post"
                 action="{% url 'mark_task_as_completed' pk=object.pk %}">
             {% csrf_token %}

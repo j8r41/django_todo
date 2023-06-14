@@ -91,6 +91,25 @@ class Task(models.Model):
             f'You have been removed from the task "{self.title}"!',
         )
 
+    def leave_task(self, request):
+        self.assigned_users.remove(request.user)
+        self.save()
+        messages.add_message(
+            request,
+            messages.INFO,
+            f'You have left the task "{self.title}"!',
+        )
+        
+    def mark_as_completed(self, request):
+        if not self.is_completed:
+            self.is_completed = True
+            self.completed_by.add(request.user)
+            self.save()
+        else:
+            self.is_completed = False
+            self.completed_by.remove(request.user)
+            self.save()
+
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

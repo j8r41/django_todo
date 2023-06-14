@@ -120,15 +120,18 @@ class MarkTaskAsCompletedView(LoginRequiredMixin, View):
 
     def post(self, request, pk):
         task = get_object_or_404(Task, pk=pk)
-        if not task.is_completed:
-            task.is_completed = True
-            task.completed_by.add(request.user)
-            task.save()
-        else:
-            task.is_completed = False
-            task.completed_by.remove(request.user)
-            task.save()
+        task.mark_as_completed(request)
         return redirect("task_detail", pk=task.pk)
+
+
+class LeaveTaskView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        return HttpResponseBadRequest()
+
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        task.leave_task(request)
+        return redirect("home")
 
 
 class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):

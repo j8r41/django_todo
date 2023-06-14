@@ -1,13 +1,14 @@
 from django.urls import path
 
 from .views import (
+    LeaveTaskView,
     MarkTaskAsCompletedView,
-    TaskPendingUsersView,
     TaskCreateView,
     TaskDeleteView,
     TaskDetailView,
     TaskInvitationsListView,
     TaskListView,
+    TaskPendingUsersView,
     TaskUpdateView,
 )
 
@@ -30,6 +31,11 @@ urlpatterns = [
         "task/<int:pk>/complete/",
         MarkTaskAsCompletedView.as_view(),
         name="mark_task_as_completed",
+    ),
+    path(
+        "task/<int:pk>/leave/",
+        LeaveTaskView.as_view(),
+        name="task_leave",
     ),
     path(
         "task/invitations/",
