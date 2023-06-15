@@ -41,11 +41,17 @@ $ nano .env
 ```
 ```
 SECRET_KEY=Your-Secret-Key
-POSTGRES_ENGINE = django.db.backends.postgresql_psycopg2
 POSTGRES_DB=postgres
 POSTGRES_NAME=postgres
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
+SERVER_EMAIL=example@example.com
+EMAIL_HOST=smtp.example.com
+EMAIL_HOST_USER=example@example.com
+EMAIL_HOST_PASSWORD=password
+EMAIL_PORT=587
+EMAIL_SUBJECT_PREFIX=example
+DEFAULT_FROM_EMAIL=example@example.com
 ```
 5. Ruun code.
 ```
