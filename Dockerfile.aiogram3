@@ -1,0 +1,11 @@
+FROM python:3.10
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /code/telegram
+
+COPY requirements.txt /code/telegram/
+RUN pip install -r requirements.txt
+
+COPY /app/telegram /code/telegram
