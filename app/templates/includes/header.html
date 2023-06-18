@@ -15,11 +15,15 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'home' %}">Tasks</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'task_invitations' %}">Invitations
-                        {% if task_invitations_count > 0 %}<button class="btn btn-danger btn-sm">{{ task_invitations_count }}</button>{% endif %}
-                    </a>
-                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'task_invitations' %}">Invitations
+                            {% if task_invitations_count > 0 %}
+                                <button class="btn btn-danger btn-sm">{{ task_invitations_count }}</button>
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav">
                 <div class="dropdown text-end">
