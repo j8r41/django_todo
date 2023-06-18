@@ -99,7 +99,7 @@ class Task(models.Model):
             messages.INFO,
             f'You have left the task "{self.title}"!',
         )
-        
+
     def mark_as_completed(self, request):
         if not self.is_completed:
             self.is_completed = True
