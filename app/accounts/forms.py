@@ -9,7 +9,6 @@ class CustomUserCreationForm(UserCreationForm):
         fields = (
             "email",
             "username",
-            "telegram",
         )
 
 
@@ -19,14 +18,18 @@ class CustomUserChangeForm(UserChangeForm):
         fields = (
             "email",
             "username",
-            "telegram",
         )
 
 
 class CustomProfileChangeForm(forms.ModelForm):
+    telegram_key = forms.CharField(
+        widget=forms.TextInput(attrs={"readonly": True}),
+        help_text="This field is auto-generated and cannot be edited.",
+    )
+
     class Meta:
         model = get_user_model()
         fields = (
             "username",
-            "telegram",
+            "telegram_key",
         )
