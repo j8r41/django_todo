@@ -25,7 +25,7 @@ urlpatterns = [
     path("", TaskListView.as_view(), name="home"),
     path("", include(router.urls)),
     path(
-        "api/task/<str:telegram_key>/",
+        "api/v1/task/<str:telegram_key>/",
         TaskListAPIView.as_view(),
         name="task-list",
     ),
