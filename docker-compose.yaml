@@ -1,18 +1,14 @@
 services:
-  db:
+  db-django:
     image: postgres
     volumes:
-      - ./app/data/db:/var/lib/postgresql/data
+      - ./app/data/db-django:/var/lib/postgresql/data
     environment:
-      - POSTGRES_ENGINE=django.db.backends.postgresql_psycopg2
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_NAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile.django
-    container_name: django
+  django:
+    build: .
     command: >
       sh -c "
         python manage.py makemigrations &&
@@ -22,7 +18,7 @@ services:
         python manage.py runserver 0.0.0.0:8000
       "
     volumes:
-      - ./app/django:/code/django
+      - ./app:/code/
     ports:
       - "8000:8000"
     environment:
@@ -30,26 +26,14 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     depends_on:
-      - db
-  telegram_bot:
-    build:
-      context: .
-      dockerfile: Dockerfile.aiogram3
-    container_name: aiogram3
-    command: "python bot.py"
-    volumes:
-      - ./app/telegram:/code/telegram
-    environment:
-      - BOT_TOKEN=${BOT_TOKEN}
-    depends_on:
-      - db
+      - db-django
   pgadmin:
     image: dpage/pgadmin4
-    depends_on:
-      - db
     ports:
       - "5051:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: root@root.com
       PGADMIN_DEFAULT_PASSWORD: root
+    depends_on:
+      - db-django
     restart: always

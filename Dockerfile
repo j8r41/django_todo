@@ -3,9 +3,9 @@ FROM python:3.10
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /code/django
+WORKDIR /code
 
-COPY requirements.txt /code/django/
+COPY requirements.txt /code/
 RUN pip install -r requirements.txt
 
-COPY /app/django /code/django
+COPY /app /code

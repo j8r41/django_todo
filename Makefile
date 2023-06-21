@@ -1,2 +1,2 @@
 web-console:
-	docker-compose exec web bash
+	docker-compose exec django bash
