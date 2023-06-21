@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "debug_toolbar",
+    "rest_framework",
     # My apps:
     "todo.apps.TodoConfig",
     "accounts.apps.AccountsConfig",

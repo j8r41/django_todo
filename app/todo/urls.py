@@ -1,5 +1,7 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
+from .api.views import TaskListAPIView
 from .views import (
     LeaveTaskView,
     MarkTaskAsCompletedView,
@@ -12,8 +14,21 @@ from .views import (
     TaskUpdateView,
 )
 
+router = DefaultRouter()
+# router.register(
+#     "tasks/<str:telegram_key>/",
+#     TaskListAPIView.as_view(),
+#     basename="task-list",
+# )
+
 urlpatterns = [
     path("", TaskListView.as_view(), name="home"),
+    path("", include(router.urls)),
+    path(
+        "api/task/<str:telegram_key>/",
+        TaskListAPIView.as_view(),
+        name="task-list",
+    ),
     path("task/<int:pk>/", TaskDetailView.as_view(), name="task_detail"),
     path("task/new/", TaskCreateView.as_view(), name="task_new"),
     path("task/<int:pk>/edit/", TaskUpdateView.as_view(), name="task_edit"),
