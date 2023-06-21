@@ -15,8 +15,7 @@ services:
         python manage.py makemigrations todo &&
         python manage.py makemigrations accounts &&
         python manage.py migrate &&
-        python telegram/bot.py
-        python manage.py runserver 0.0.0.0:8000 &&
+        python manage.py runserver 0.0.0.0:8000
       "
     volumes:
       - ./app:/code/
