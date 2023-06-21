@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 class TaskListAPIView(ListAPIView):
-    permission_classes = (IsAdminUser,)
+    # permission_classes = (IsAdminUser,)
     serializer_class = TaskSerializer
 
     def get_queryset(self):
