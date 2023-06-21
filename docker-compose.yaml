@@ -2,13 +2,15 @@ services:
   db-django:
     image: postgres
     volumes:
-      - ./app/data/db-django:/var/lib/postgresql/data
+      - ./app/django/data/db-django:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_NAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
   django:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.django
     command: >
       sh -c "
         python manage.py makemigrations &&
@@ -18,7 +20,7 @@ services:
         python manage.py runserver 0.0.0.0:8000
       "
     volumes:
-      - ./app:/code/
+      - ./app/django:/code/django
     ports:
       - "8000:8000"
     environment:
@@ -37,3 +39,24 @@ services:
     depends_on:
       - db-django
     restart: always
+  db-telegram-bot:
+    image: postgres:12-alpine
+    volumes:
+      - ./app/aiogram/data/db-telegram-bot:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_NAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  telegram-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.aiogram
+    command: "python bot/bot.py"
+    volumes:
+      - ./app/aiogram:/code/aiogram
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - DB_URL=${DB_URL}
+    depends_on:
+      - db-telegram-bot
+      - django
