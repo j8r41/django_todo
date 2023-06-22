@@ -6,7 +6,7 @@ import aiohttp
 
 
 async def is_response_ok(telegram_key: str):
-    url = f"http://127.0.0.1:8000/api/v1/task/{telegram_key}/"
+    url = f"http://django:8000/api/v1/task/{telegram_key}/"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             status_code = response.status
@@ -14,7 +14,7 @@ async def is_response_ok(telegram_key: str):
 
 
 async def get_tasks_with_auth(telegram_key: str):
-    url = f"http://127.0.0.1:8000/api/v1/task/{telegram_key}/"
+    url = f"http://django:8000/api/v1/task/{telegram_key}/"
     # auth = BasicAuth(login=username, password=password)
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:

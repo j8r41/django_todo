@@ -1,12 +1,12 @@
-from sqlalchemy import Column, Integer
+from sqlalchemy import Column, Integer, VARCHAR
 
 from .base import Base
 
 
 class TelegramUser(Base):
-    __tablename__ = "telegram_users"
+    __tablename__ = "accounts"
 
     user_id = Column(
         Integer, primary_key=True, unique=True, autoincrement=False
     )
-    telegram_auth_key = Column(Integer, unique=True)
+    telegram_auth_key = Column(VARCHAR, unique=True)
