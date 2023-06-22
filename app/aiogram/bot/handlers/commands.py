@@ -8,6 +8,7 @@ from db.models import TelegramUser
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils.response import get_tasks_with_auth, is_response_ok
+from keyboards import kb_start, kb_task_list
 
 router = Router()
 
@@ -34,13 +35,14 @@ async def cmd_start(
     else:
         await message.answer(
             "Hi there! Enter your telegram auth key from "
-            f"<a href='{host_url}/accounts/profile/'>your profile</a>."
+            f"<a href='{host_url}/accounts/profile/'>your profile</a>.",
+            reply_markup=kb_start.as_markup(resize_keyboard=True),
         )
         await state.set_state(SetLinkAucsState.unlinked_aucs)
 
 
 @router.message(Command("cancel"))
-@router.message(F.text.casefold() == "cancel")
+@router.message(F.text.casefold() == ["cancel", "Cancel ❌"])
 async def cmd_cancel(
     message: Message, state: FSMContext, session: AsyncSession
 ):
@@ -70,7 +72,10 @@ async def linkink_aucs(
         )
         session.add(new_user)
         await session.commit()
-        await message.answer("Success! Your telegram profile is linked.")
+        await message.answer(
+            "Success! Your telegram profile is linked.",
+            reply_markup=kb_task_list.as_markup(resize_keyboard=True),
+        )
         await state.set_state(SetLinkAucsState.linked_aucs)
     else:
         await message.answer(
@@ -79,6 +84,7 @@ async def linkink_aucs(
 
 
 @router.message(SetLinkAucsState.linked_aucs, Command("tasks"))
+@router.message(F.text.casefold() == "Get task list 📋")
 async def send_task_list(
     message: Message, state: FSMContext, session: AsyncSession
 ):
@@ -106,4 +112,7 @@ async def send_task_list(
         created_at = task.get("created_at")
         if created_at is not None:
             text_message += f"<i>Created at:</i> {created_at}\n"
-        await message.answer(text_message)
+        await message.answer(
+            text_message,
+            reply_markup=kb_task_list.as_markup(resize_keyboard=True),
+        )
