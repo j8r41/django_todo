@@ -1,11 +1,11 @@
-from aiogram import Router
-from aiogram.filters import CommandStart, Command
+from aiogram import F, Router
+from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message
-from aiogram import F
 from config.config import host_url
 from db.models import TelegramUser
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils.response import get_tasks_with_auth, is_response_ok
 
@@ -28,7 +28,16 @@ async def cmd_start(message: Message, state: FSMContext):
 
 @router.message(Command("cancel"))
 @router.message(F.text.casefold() == "cancel")
-async def cmd_cancel(message: Message, state: FSMContext):
+async def cmd_cancel(
+    message: Message, state: FSMContext, session: AsyncSession
+):
+    stmt = select(TelegramUser).where(TelegramUser.user_id == message.from_user.id)
+    result = await session.execute(stmt)
+    current_user = result.scalars().first()
+    current_user.telegram_auth_key = None
+    await session.flush()
+    await session.commit()
+    
     await state.clear()
     await message.answer("Your data was cleared.")
 

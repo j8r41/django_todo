@@ -42,8 +42,8 @@ services:
     ports:
       - "5051:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: root@root.com
-      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_DEFAULT_EMAIL: a@a.com
+      PGADMIN_DEFAULT_PASSWORD: a
     depends_on:
       - db-django
     networks:
