@@ -1,15 +1,15 @@
-# Django Do App
+# Django To Do App + Aiogram3 Telegram bot
 
 ## About
 
-To-do list and task management app. Supported many users, task compliting and discussing by multiple users, task sorting and searching, e-mail-verification. [Details here.](https://github.com/j8r41/django_todo/blob/master/task.txt)
+To-do list and task management app. Supported many users, task compliting and discussing by multiple users, task sorting and searching, e-mail-verification. Linked with telegram bot, that send task list. [Details here.](https://github.com/j8r41/django_todo/blob/master/task.txt)
 
 ## Install
 
 ### Prerequisites:
 
-- python 3.9+
-- pip
+- python 3.10+
+- Docker
 
 1. Download the repository.
 
@@ -17,26 +17,7 @@ To-do list and task management app. Supported many users, task compliting and di
 $ git clone https://github.com/j8r41/django_todo.git
 ```
 
-2. Activate enviroment.
-
-```
-$ cd django_todo
-$ python3 -m venv venv
-
-#Linux, Mac:
-$ source venv/bin/activate
-
-#Windows
-$ source venv/Scripts/activate
-```
-
-3. Install requirements.
-
-```
-(venv) $ pip install -r requirements.txt
-```
-
-4. Note environment variables as in .envexample or just copy:
+2. Note environment variables as in .envexample or just copy:
 
 ```
 $ touch .env
@@ -67,19 +48,15 @@ BOT_TOKEN = 9999999999999:sdafsdf23234-asdasdgsd-sdf124123
 DB_URL=postgresql+psycopg://postgres:postgres@db-telegram-bot/postgres
 ```
 
-5. Run code.
+
+
+### Run Docker:
 
 ```
-$ python3 manage.py makemigrations
-$ python3 manage.py migrate
-$ python3 manage.py collectstatic
-$ python3 manage.py runserver
-```
-
-### Docker:
-
-```
-$ cd django_library
+$ cd django_todo
 $ docker compose build
 $ docker compose up
+$ docker compose exec telegram-bot bash
+$ alembic revision -m "create accounts table"
+$ alembic upgrade head
 ```

@@ -297,5 +297,4 @@ pyrightconfig.json
 data
 .vscode
 staticfiles
-migrations
 postgres
