@@ -15,6 +15,7 @@ async def is_response_ok(telegram_key: str):
 
 async def get_tasks_with_auth(telegram_key: str):
     url = f"http://django:8000/api/v1/task/{telegram_key}/"
+    # url = f"http://localhost:8000/api/v1/task/{telegram_key}/"
     # auth = BasicAuth(login=username, password=password)
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -23,8 +24,10 @@ async def get_tasks_with_auth(telegram_key: str):
 
 
 async def main():
-    result = await is_response_ok("1922b46b042a9816c3bc")
-    print(result)
+    data = await get_tasks_with_auth("1922b46b042a9816c3bc")
+    for task in data:
+        print(type(task), task)
+        print(task.get("title"))
 
 
 if __name__ == "__main__":
