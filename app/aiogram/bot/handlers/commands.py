@@ -5,9 +5,10 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message
 from config.config import host_url
 from db.models import TelegramUser
-from sqlalchemy import select, update
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from utils.response import get_tasks_with_auth, is_response_ok
+from keyboards import kb_start, kb_task_list
 
 router = Router()
 
@@ -18,28 +19,45 @@ class SetLinkAucsState(StatesGroup):
 
 
 @router.message(CommandStart())
-async def cmd_start(message: Message, state: FSMContext):
-    await message.answer(
-        "Hi there! Enter your telegram auth key from "
-        f"<a href='{host_url}/accounts/profile/'>your profile</a>."
+async def cmd_start(
+    message: Message, state: FSMContext, session: AsyncSession
+):
+    stmt = select(TelegramUser).where(
+        TelegramUser.user_id == message.from_user.id
     )
-    await state.set_state(SetLinkAucsState.unlinked_aucs)
+    result = await session.execute(stmt)
+    current_user: TelegramUser = result.scalars().first()
+    if current_user:
+        await state.set_state(SetLinkAucsState.linked_aucs)
+        await message.answer(
+            "You have already registered!\nTo get task list - /tasks"
+        )
+    else:
+        await message.answer(
+            "Hi there! Enter your telegram auth key from "
+            f"<a href='{host_url}/accounts/profile/'>your profile</a>.",
+            reply_markup=kb_start.as_markup(resize_keyboard=True),
+        )
+        await state.set_state(SetLinkAucsState.unlinked_aucs)
 
 
 @router.message(Command("cancel"))
-@router.message(F.text.casefold() == "cancel")
+@router.message(F.text.casefold() == ["cancel", "Cancel ❌"])
 async def cmd_cancel(
     message: Message, state: FSMContext, session: AsyncSession
 ):
-    stmt = select(TelegramUser).where(TelegramUser.user_id == message.from_user.id)
-    result = await session.execute(stmt)
-    current_user = result.scalars().first()
-    current_user.telegram_auth_key = None
-    await session.flush()
-    await session.commit()
-    
-    await state.clear()
-    await message.answer("Your data was cleared.")
+    current_user = delete(TelegramUser).where(
+        TelegramUser.user_id == message.from_user.id
+    )
+    if current_user is not None:
+        await session.execute(current_user)
+        await session.commit()
+        await state.clear()
+        await message.answer(
+            "Your data was successfully deleted. Start again - /start"
+        )
+    else:
+        await message.answer("You are not registered in our system.")
 
 
 @router.message(SetLinkAucsState.unlinked_aucs)
@@ -54,7 +72,10 @@ async def linkink_aucs(
         )
         session.add(new_user)
         await session.commit()
-        await message.answer("Success! Your telegram profile is linked.")
+        await message.answer(
+            "Success! Your telegram profile is linked.",
+            reply_markup=kb_task_list.as_markup(resize_keyboard=True),
+        )
         await state.set_state(SetLinkAucsState.linked_aucs)
     else:
         await message.answer(
@@ -62,6 +83,36 @@ async def linkink_aucs(
         )
 
 
-@router.message(SetLinkAucsState.linked_aucs)
-async def linkink_aucs():
-    pass
+@router.message(SetLinkAucsState.linked_aucs, Command("tasks"))
+@router.message(F.text.casefold() == "Get task list 📋")
+async def send_task_list(
+    message: Message, state: FSMContext, session: AsyncSession
+):
+    stmt = select(TelegramUser).where(
+        TelegramUser.user_id == message.from_user.id
+    )
+    result = await session.execute(stmt)
+    current_user: TelegramUser = result.scalars().first()
+
+    data = await get_tasks_with_auth(
+        telegram_key=current_user.telegram_auth_key
+    )
+    for task in data:
+        text_message = ""
+        title = task.get("title")
+        text_message += f"<b>{title}</b>\n"
+        description = task.get("description")
+        text_message += f"<i>Description:</i> {description}\n"
+        end_date = task.get("end_date")
+        if end_date is not None:
+            text_message += f"<i>Ended at:</i> {end_date}\n"
+        status = task.get("status")
+        if status != "":
+            text_message += f"<i>Status:</i> {status}\n"
+        created_at = task.get("created_at")
+        if created_at is not None:
+            text_message += f"<i>Created at:</i> {created_at}\n"
+        await message.answer(
+            text_message,
+            reply_markup=kb_task_list.as_markup(resize_keyboard=True),
+        )
